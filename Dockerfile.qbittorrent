@@ -1,0 +1,41 @@
+FROM registry.redhat.io/rhel9/toolbox:latest
+
+# Install qBittorrent and dependencies from RHEL repos
+RUN dnf update -y && \
+    dnf install -y \
+    https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
+    && /usr/bin/crb enable \
+    && dnf update -y && \
+    dnf install -y \
+    qt5-qtbase \
+    qt5-qtbase-devel \
+    && dnf install -y \
+    qbittorrent-nox \
+    python3 \
+    wget \
+    && dnf clean all
+
+# Create user with same UID/GID as host
+ARG PUID=501
+ARG PGID=20
+RUN groupadd -g ${PGID} qbittorrent && \
+    useradd -u ${PUID} -g ${PGID} -m -s /bin/bash qbittorrent
+
+# Create directories
+RUN mkdir -p /config /downloads && \
+    chown -R qbittorrent:qbittorrent /config /downloads
+
+# Set up qBittorrent configuration
+COPY qbittorrent-start.sh /usr/local/bin/qbittorrent-start.sh
+RUN chmod +x /usr/local/bin/qbittorrent-start.sh
+
+# Set environment variables
+ENV QBT_WEBUI_PORT=8080
+ENV QBT_PROFILE=/config
+
+VOLUME ["/config", "/downloads"]
+
+EXPOSE 8080 6881 6881/udp
+
+USER qbittorrent
+CMD ["/usr/local/bin/qbittorrent-start.sh"]

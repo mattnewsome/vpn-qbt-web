@@ -1,0 +1,62 @@
+version: "3"
+services:
+  nordvpn:
+    image: localhost/test-nordvpn:latest
+    container_name: nordvpn
+    privileged: true
+    devices:
+      - /dev/net/tun
+    environment:
+      - NORDVPN_TOKEN=${NORDVPN_TOKEN}
+      - NORDVPN_COUNTRY=${NORDVPN_COUNTRY:-United_States}
+      - LOCAL_NETWORK=${LOCAL_NETWORK:-10.0.0.0/8,172.16.0.0/12}
+    ports:
+      - 8080:8080 # qBittorrent Web UI
+      - 6881:6881 # Torrent TCP port
+      - 6881:6881/udp # Torrent UDP port
+      - 3000:3000 # Firefox Web UI
+    restart: unless-stopped
+    networks:
+      - vpn-network
+
+  qbittorrent:
+    image: docker.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: "service:nordvpn"
+    depends_on:
+      - nordvpn
+    environment:
+      - PUID=501
+      - PGID=20
+      - TZ=Europe/London
+      - WEBUI_PORT=8080
+    volumes:
+      - ./config:/config
+      - ./downloads:/downloads
+    restart: unless-stopped
+
+  firefox:
+    image: docker.io/linuxserver/firefox:latest
+    container_name: firefox
+    network_mode: "service:nordvpn"
+    depends_on:
+      - nordvpn
+    environment:
+      - PUID=501
+      - PGID=20
+      - TZ=Europe/London
+      - CUSTOM_WIDTH=1600
+      - CUSTOM_HEIGHT=1200
+      - CUSTOM_DPI=120
+      - SCALING_FACTOR=1.6
+      - QT_SCALE_FACTOR=1.6
+      - GDK_SCALE=1.6
+    volumes:
+      - ./firefox-config:/config
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+
+networks:
+  vpn-network:
+    driver: bridge

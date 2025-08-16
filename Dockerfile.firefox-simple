@@ -1,0 +1,41 @@
+FROM registry.redhat.io/ubi9/ubi:latest
+
+# Install required packages from UBI repos
+RUN dnf update -y && \
+    dnf install -y \
+    python3 \
+    wget \
+    tar \
+    xz \
+    && dnf clean all
+
+# Install Firefox from Mozilla's official binaries
+RUN wget -O /tmp/firefox.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
+    cd /tmp && tar xJf firefox.tar.xz && \
+    mv firefox /opt/ && \
+    ln -s /opt/firefox/firefox /usr/local/bin/firefox && \
+    rm -f /tmp/firefox.tar.xz
+
+# Create user with same UID/GID as host
+ARG PUID=501
+ARG PGID=20
+RUN groupadd -g ${PGID} firefox 2>/dev/null || groupmod -n firefox $(getent group ${PGID} | cut -d: -f1) && \
+    useradd -u ${PUID} -g ${PGID} -m -s /bin/bash firefox
+
+# Create config directory
+RUN mkdir -p /config && chown firefox:firefox /config
+
+# Set up Firefox profile directory
+RUN mkdir -p /home/firefox/.mozilla && \
+    chown -R firefox:firefox /home/firefox
+
+# Simple startup script that runs a basic HTTP server for now
+COPY firefox-simple-start.sh /usr/local/bin/firefox-simple-start.sh
+RUN chmod +x /usr/local/bin/firefox-simple-start.sh
+
+VOLUME ["/config"]
+
+EXPOSE 3000
+
+USER firefox
+CMD ["/usr/local/bin/firefox-simple-start.sh"]

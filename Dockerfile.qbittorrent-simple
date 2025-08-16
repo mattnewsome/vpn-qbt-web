@@ -1,0 +1,38 @@
+FROM registry.redhat.io/ubi9/ubi:latest
+
+# Install required packages from UBI repos
+RUN dnf update -y && \
+    dnf install -y \
+    python3 \
+    wget \
+    tar \
+    gzip \
+    && dnf clean all
+
+# Download qBittorrent static binary (unofficial but functional approach for testing)
+# We'll use a simple HTTP server approach similar to Firefox for now
+RUN mkdir -p /opt/qbittorrent
+
+# Create user with same UID/GID as host
+ARG PUID=501
+ARG PGID=20
+RUN groupadd -g ${PGID} qbittorrent 2>/dev/null || groupmod -n qbittorrent $(getent group ${PGID} | cut -d: -f1) && \
+    useradd -u ${PUID} -g ${PGID} -m -s /bin/bash qbittorrent
+
+# Create directories
+RUN mkdir -p /config /downloads && \
+    chown -R qbittorrent:qbittorrent /config /downloads /opt/qbittorrent
+
+# Set up qBittorrent placeholder script
+COPY qbittorrent-simple-start.sh /usr/local/bin/qbittorrent-simple-start.sh
+RUN chmod +x /usr/local/bin/qbittorrent-simple-start.sh
+
+# Set environment variables
+ENV QBT_WEBUI_PORT=8080
+
+VOLUME ["/config", "/downloads"]
+
+EXPOSE 8080 6881 6881/udp
+
+USER qbittorrent
+CMD ["/usr/local/bin/qbittorrent-simple-start.sh"]

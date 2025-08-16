@@ -1,0 +1,29 @@
+FROM registry.redhat.io/rhel9/toolbox:latest
+
+# Install required packages  
+RUN dnf update -y && \
+    dnf install -y \
+    wget \
+    procps-ng \
+    iptables \
+    iproute \
+    && dnf clean all
+
+# Install NordVPN manually using their repository
+RUN dnf install -y dnf-plugins-core && \
+    dnf config-manager --add-repo https://repo.nordvpn.com/yum/nordvpn/centos/aarch64 && \
+    dnf install -y --assumeyes --nogpgcheck nordvpn
+
+# Create default user and add to nordvpn group (group created by nordvpn package)
+RUN useradd -u 1001 -g nordvpn -s /bin/bash nordvpn
+
+# Copy startup script
+COPY nordvpn-simple-start.sh /usr/local/bin/nordvpn-simple-start.sh
+RUN chmod +x /usr/local/bin/nordvpn-simple-start.sh
+
+# Set up directories
+RUN mkdir -p /var/lib/nordvpn
+
+EXPOSE 8080 3000 6881 6881/udp
+
+CMD ["/usr/local/bin/nordvpn-simple-start.sh"]

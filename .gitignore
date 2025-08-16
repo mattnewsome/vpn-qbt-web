@@ -1,0 +1,16 @@
+# Generated configuration and data directories
+config/
+firefox-config/
+downloads/
+
+# Environment file with credentials
+.env
+
+# macOS files
+.DS_Store
+
+# Temporary files
+firefox-startup.sh
+
+# Log files
+*.log

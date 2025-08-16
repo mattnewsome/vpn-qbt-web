@@ -8,6 +8,28 @@ set -e
 echo "🚀 Starting VPN stack..."
 echo
 
+# Check Red Hat registry access by attempting fresh pull
+echo "🔍 Checking Red Hat registry access..."
+echo "🔐 Testing registry authentication (this ensures you have access)..."
+if ! podman pull registry.redhat.io/rhel9/toolbox:latest --quiet 2>/dev/null; then
+    echo "❌ Cannot access Red Hat registry. You need to login first."
+    echo "📋 Steps to get access:"
+    echo "   1. Create free account at: https://developers.redhat.com/"
+    echo "   2. Login below with your Red Hat credentials"
+    echo ""
+    echo "🔐 Logging into Red Hat registry..."
+    if ! podman login registry.redhat.io; then
+        echo "❌ Red Hat registry login failed. Please check your credentials."
+        exit 1
+    fi
+    echo "✅ Red Hat registry login successful!"
+    echo "🔄 Retrying base image pull..."
+    podman pull registry.redhat.io/rhel9/toolbox:latest --quiet
+else
+    echo "✅ Red Hat registry access confirmed"
+fi
+echo
+
 # Source environment variables
 if [ -f .env ]; then
     echo "📄 Loading environment variables from .env..."

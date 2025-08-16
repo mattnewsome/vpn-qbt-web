@@ -21,7 +21,13 @@ A secure containerized setup that routes Firefox and qBittorrent traffic through
 
 ## 🚀 Quick Start
 
-### 1. Set up credentials
+### 1. Prerequisites
+
+You need access to Red Hat container images. If you don't have a Red Hat account:
+1. **Create free account**: Go to https://developers.redhat.com/
+2. **Login to registry**: The start script will prompt you to login if needed
+
+### 2. Set up credentials
 
 ```bash
 # Copy the example environment file
@@ -38,13 +44,18 @@ NORDVPN_COUNTRY=United_States
 LOCAL_NETWORK=10.0.0.0/8,172.16.0.0/12
 ```
 
-### 2. Start everything
+### 3. Start everything
 
 ```bash
 ./start-everything.sh
 ```
 
-### 3. Access your services
+The script will automatically:
+- Check if you're logged into Red Hat registry (prompts login if needed)
+- Build the custom NordVPN container
+- Start all services
+
+### 4. Access your services
 
 - **Firefox**: http://localhost:3000
 - **qBittorrent**: http://localhost:8080

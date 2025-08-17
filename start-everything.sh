@@ -38,8 +38,16 @@ else
     echo "⚠️  Warning: .env file not found. Make sure NORDVPN_TOKEN is set."
 fi
 
-# Build custom NordVPN container if needed
-echo "🔨 Building custom NordVPN container..."
+# Generate TLS certificates for encryption if they don't exist
+if [ ! -f ./certs/stunnel.pem ]; then
+    echo "🔐 Generating TLS certificates for encrypted communication..."
+    ./generate-certs.sh
+else
+    echo "✅ TLS certificates already exist"
+fi
+
+# Build custom NordVPN container with encryption
+echo "🔨 Building encrypted VPN container..."
 podman build -t localhost/test-nordvpn:latest -f Dockerfile.nordvpn .
 
 # Start the stack
@@ -50,22 +58,22 @@ echo
 echo "⏳ Waiting for services to start..."
 sleep 15
 
-# Check if services are accessible
-echo "🔍 Checking service health..."
+# Check if encrypted services are accessible
+echo "🔍 Checking encrypted service health..."
 
-FIREFOX_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 || echo "000")
-QB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
+FIREFOX_STATUS=$(curl -s -k -o /dev/null -w "%{http_code}" https://localhost:3443 || echo "000")
+QB_STATUS=$(curl -s -k -o /dev/null -w "%{http_code}" https://localhost:8443 || echo "000")
 
 if [ "$FIREFOX_STATUS" = "200" ]; then
-    echo "✅ Firefox:     http://localhost:3000 (Ready)"
+    echo "✅ Firefox (TLS): https://localhost:3443 (Ready)"
 else
-    echo "🔄 Firefox:     http://localhost:3000 (Starting...)"
+    echo "🔄 Firefox (TLS): https://localhost:3443 (Starting...)"
 fi
 
-if [ "$QB_STATUS" = "200" ]; then
-    echo "✅ qBittorrent: http://localhost:8080 (Ready)"
+if [ "$QB_STATUS" = "200" ] || [ "$QB_STATUS" = "401" ]; then
+    echo "✅ qBittorrent (TLS): https://localhost:8443 (Ready)"
 else
-    echo "🔄 qBittorrent: http://localhost:8080 (Starting...)"
+    echo "🔄 qBittorrent (TLS): https://localhost:8443 (Starting...)"
 fi
 
 echo

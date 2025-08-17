@@ -11,10 +11,16 @@ services:
       - NORDVPN_COUNTRY=${NORDVPN_COUNTRY:-United_States}
       - LOCAL_NETWORK=${LOCAL_NETWORK:-10.0.0.0/8,172.16.0.0/12}
     ports:
-      - 8080:8080 # qBittorrent Web UI
-      - 6881:6881 # Torrent TCP port
-      - 6881:6881/udp # Torrent UDP port
-      - 3000:3000 # Firefox Web UI
+      - 6881:6881 # Torrent TCP port (original)
+      - 6881:6881/udp # Torrent UDP port (original) 
+      - 6882:6882 # Torrent TCP port (stunnel obfuscated)
+      - 6882:6882/udp # Torrent UDP port (stunnel obfuscated)
+      - 6883:6883 # Torrent TCP port (stunnel obfuscated alt)
+      - 6883:6883/udp # Torrent UDP port (stunnel obfuscated alt)
+      - 8443:8443 # qBittorrent Encrypted UI (nginx) - ONLY ENCRYPTED ACCESS
+      - 3443:3443 # Firefox Encrypted UI (nginx) - ONLY ENCRYPTED ACCESS
+    volumes:
+      - ./certs/stunnel.pem:/etc/ssl/certs/stunnel.pem:ro
     restart: unless-stopped
     networks:
       - vpn-network

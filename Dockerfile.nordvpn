@@ -1,12 +1,15 @@
 FROM registry.redhat.io/rhel9/toolbox:latest
 
-# Install required packages  
+# Install required packages including nginx for web UI and stunnel for P2P traffic
 RUN dnf update -y && \
     dnf install -y \
     wget \
     procps-ng \
     iptables \
     iproute \
+    nginx \
+    stunnel \
+    openssl \
     && dnf clean all
 
 # Install NordVPN manually using their repository
@@ -17,13 +20,16 @@ RUN dnf install -y dnf-plugins-core && \
 # Create default user and add to nordvpn group (group created by nordvpn package)
 RUN useradd -u 1001 -g nordvpn -s /bin/bash nordvpn
 
-# Copy startup script
+# Copy startup script, nginx config, and stunnel P2P config
 COPY nordvpn-simple-start.sh /usr/local/bin/nordvpn-simple-start.sh
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY stunnel-p2p.conf /etc/stunnel/stunnel-p2p.conf
 RUN chmod +x /usr/local/bin/nordvpn-simple-start.sh
 
 # Set up directories
-RUN mkdir -p /var/lib/nordvpn
+RUN mkdir -p /var/lib/nordvpn /var/log/nginx /etc/ssl/certs /etc/stunnel /var/run
 
-EXPOSE 8080 3000 6881 6881/udp
+# Expose web UI, P2P, and encrypted ports
+EXPOSE 8080 3000 6881 6881/udp 8443 3443 6882 6882/udp 6883 6883/udp
 
 CMD ["/usr/local/bin/nordvpn-simple-start.sh"]

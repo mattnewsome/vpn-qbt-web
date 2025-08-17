@@ -6,6 +6,9 @@ downloads/
 # Environment file with credentials
 .env
 
+# TLS certificates
+certs/
+
 # macOS files
 .DS_Store
 

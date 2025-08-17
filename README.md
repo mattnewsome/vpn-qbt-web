@@ -14,8 +14,9 @@ A secure containerized setup that routes Firefox and qBittorrent traffic through
 
 - 🔒 **Secure VPN routing** - All torrent and browser traffic goes through NordVPN
 - 🛡️ **Network isolation** - Host network is never affected
+- 🔐 **Encrypted inter-container traffic** - TLS encryption protects against host-level sniffing
 - 🔍 **Trusted base images** - Red Hat RHEL 9 + official NordVPN client
-- 🌐 **Web interfaces** - Access Firefox and qBittorrent through your browser
+- 🌐 **Web interfaces** - Access Firefox and qBittorrent through your browser (HTTP + HTTPS)
 - 📊 **Health monitoring** - Built-in scripts to check VPN status
 - 🚀 **Easy management** - Simple scripts to start/stop/restart everything
 
@@ -57,8 +58,11 @@ The script will automatically:
 
 ### 4. Access your services
 
-- **Firefox**: http://localhost:3000
-- **qBittorrent**: http://localhost:8080
+**🔒 Encrypted Access Only (for security):**
+- **Firefox**: https://localhost:3443
+- **qBittorrent**: https://localhost:8443
+
+> 🔒 **Security Note**: Only HTTPS endpoints are exposed to prevent host-level traffic sniffing. HTTP endpoints are disabled for security. Your browser will show a security warning for the self-signed certificate - this is normal and expected. Click "Advanced" → "Proceed to localhost" to continue.
 
 ## 🛠️ Management Scripts
 
@@ -185,10 +189,25 @@ Then restart: `./restart-everything.sh`
 
 - ✅ **VPN traffic isolation**: Only Firefox/qBittorrent use VPN
 - ✅ **Host network protection**: Your host IP never exposed
+- ✅ **Encrypted inter-container traffic**: TLS tunnels protect against host-level sniffing
 - ✅ **Trusted base images**: Red Hat RHEL 9 + official clients
 - ✅ **No third-party VPN containers**: Built from scratch with official NordVPN
+- ✅ **Kill switch protection**: VPN disconnection blocks all traffic
 - ⚠️ **Privileged VPN container**: Required for network configuration
+- 🔑 **Certificate security**: TLS certificates auto-generated and stored locally
 - 🔑 **Token security**: Keep your `.env` file private
+
+### Encryption Details
+
+The system provides **two layers of security**:
+
+1. **VPN Encryption**: All external traffic encrypted via NordVPN tunnel
+2. **Inter-Container Encryption**: Internal traffic encrypted via TLS tunnels
+
+This protects against:
+- **External network sniffing** (ISP, network admins)
+- **Host-level traffic analysis** (malware, compromised host)
+- **Container-to-container eavesdropping**
 
 ## 📋 System Requirements
 

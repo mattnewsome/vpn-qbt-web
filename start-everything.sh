@@ -8,6 +8,11 @@ set -e
 echo "🚀 Starting VPN stack..."
 echo
 
+# Stop any existing containers first to prevent conflicts
+echo "🔄 Stopping any existing containers first..."
+./stop-everything.sh 2>/dev/null || true
+echo
+
 # Check Red Hat registry access by attempting fresh pull
 echo "🔍 Checking Red Hat registry access..."
 echo "🔐 Testing registry authentication (this ensures you have access)..."

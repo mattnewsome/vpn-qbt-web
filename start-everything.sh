@@ -35,7 +35,44 @@ if [ -f .env ]; then
     echo "📄 Loading environment variables from .env..."
     source .env
 else
-    echo "⚠️  Warning: .env file not found. Make sure NORDVPN_TOKEN is set."
+    echo "⚠️  Warning: .env file not found. Creating one now..."
+    echo "# Copy this file to .env and fill in your NordVPN credentials" > .env
+    echo "# Get your access token from NordVPN dashboard (works with 2FA accounts)" >> .env
+    echo "NORDVPN_TOKEN=" >> .env
+    echo "NORDVPN_COUNTRY=United_States" >> .env
+    echo "LOCAL_NETWORK=10.0.0.0/8,172.16.0.0/12" >> .env
+    echo "📄 Created .env template"
+    source .env
+fi
+
+# Check if NORDVPN_TOKEN is set and prompt if missing
+if [ -z "$NORDVPN_TOKEN" ]; then
+    echo
+    echo "🔑 NordVPN Access Token Required"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Your NordVPN access token is not configured."
+    echo "You can get your access token from: https://my.nordaccount.com/dashboard/nordvpn/"
+    echo "This works with 2FA-enabled accounts."
+    echo
+    read -p "Please enter your NordVPN access token: " NORDVPN_TOKEN
+    
+    if [ -z "$NORDVPN_TOKEN" ]; then
+        echo "❌ Error: No access token provided. Cannot continue without NordVPN credentials."
+        exit 1
+    fi
+    
+    # Update .env file with the provided token
+    if grep -q "NORDVPN_TOKEN=" .env; then
+        # Replace existing empty token line
+        sed -i.backup "s/NORDVPN_TOKEN=.*/NORDVPN_TOKEN=$NORDVPN_TOKEN/" .env
+    else
+        # Add token if line doesn't exist
+        echo "NORDVPN_TOKEN=$NORDVPN_TOKEN" >> .env
+    fi
+    
+    rm -f .env.backup 2>/dev/null || true
+    echo "✅ Access token saved to .env file"
+    echo
 fi
 
 # Generate TLS certificates for encryption if they don't exist

@@ -93,6 +93,17 @@ else
 fi
 
 echo
+echo "🔑 qBittorrent Login Credentials:"
+echo "   Username: admin"
+QBITTORRENT_PASSWORD=$(podman logs qbittorrent 2>/dev/null | grep -o "temporary password is provided for this session: [^ ]*" | tail -1 | cut -d' ' -f8 || echo "Not found - check logs manually")
+if [ "$QBITTORRENT_PASSWORD" = "Not found - check logs manually" ]; then
+    echo "   Password: Could not extract from logs. Run 'podman logs qbittorrent' to find it."
+else
+    echo "   Password: $QBITTORRENT_PASSWORD"
+fi
+echo "   WebUI: https://localhost:8443"
+
+echo
 echo "✨ Stack startup complete!"
 echo
 echo "📊 Run './check-vpn-status.sh' for detailed health check"

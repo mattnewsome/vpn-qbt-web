@@ -139,5 +139,5 @@ fi
 
 echo
 echo "Services accessible at:"
-echo "  Firefox:    http://localhost:3000"
-echo "  qBittorrent: http://localhost:8080"
+echo "  Firefox:    https://localhost:3443"
+echo "  qBittorrent: https://localhost:8443"

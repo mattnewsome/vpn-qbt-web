@@ -83,18 +83,18 @@ fi
 # Generate TLS certificates for encryption if they don't exist
 if [ ! -f ./certs/stunnel.pem ]; then
     echo "🔐 Generating TLS certificates for encrypted communication..."
-    ./generate-certs.sh
+    ./scripts/generate-certs.sh
 else
     echo "✅ TLS certificates already exist"
 fi
 
 # Build custom NordVPN container with encryption
 echo "🔨 Building encrypted VPN container..."
-podman build -t localhost/test-nordvpn:latest -f Dockerfile.nordvpn .
+podman build -t localhost/test-nordvpn:latest -f docker/Dockerfile.nordvpn .
 
 # Start the stack
 echo "🐳 Starting containers..."
-podman-compose -f compose-vpn.yml up -d
+podman-compose -f docker/compose-vpn.yml up -d
 
 echo
 echo "⏳ Waiting for services to start..."
@@ -148,5 +148,5 @@ echo "   WebUI: https://localhost:8443"
 echo
 echo "✨ Stack startup complete!"
 echo
-echo "📊 Run './check-vpn-status.sh' for detailed health check"
+echo "📊 Run './scripts/check-vpn-status.sh' for detailed health check"
 echo "🛑 Run './stop-everything.sh' to shut down everything"

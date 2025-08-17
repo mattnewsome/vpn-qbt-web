@@ -30,10 +30,10 @@ RUN groupadd -g ${PGID} firefox && \
     useradd -u ${PUID} -g ${PGID} -m -s /bin/bash firefox
 
 # Set up supervisord configuration
-COPY supervisord.conf /etc/supervisord.conf
+COPY docker/supervisord.conf /etc/supervisord.conf
 
 # Startup script 
-COPY firefox-start.sh /usr/local/bin/firefox-start.sh
+COPY scripts/firefox-start.sh /usr/local/bin/firefox-start.sh
 RUN chmod +x /usr/local/bin/firefox-start.sh
 
 # Create config directory

@@ -26,7 +26,7 @@ RUN mkdir -p /config /downloads && \
     chown -R qbittorrent:qbittorrent /config /downloads
 
 # Set up qBittorrent configuration
-COPY qbittorrent-start.sh /usr/local/bin/qbittorrent-start.sh
+COPY scripts/qbittorrent-start.sh /usr/local/bin/qbittorrent-start.sh
 RUN chmod +x /usr/local/bin/qbittorrent-start.sh
 
 # Set environment variables

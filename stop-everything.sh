@@ -10,7 +10,7 @@ echo
 
 # Stop all containers
 echo "🐳 Stopping containers..."
-podman-compose -f compose-vpn.yml down
+podman-compose -f docker/compose-vpn.yml down
 
 echo
 echo "🔍 Verifying shutdown..."

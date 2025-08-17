@@ -26,4 +26,4 @@ sleep 2
 # Start Firefox
 echo "Starting Firefox..."
 export HOME=/home/firefox
-exec firefox --display=:1 --no-sandbox
+exec firefox --display=:1 --no-sandbox https://whatismyipaddress.com/

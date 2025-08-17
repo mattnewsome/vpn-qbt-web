@@ -20,7 +20,7 @@ services:
       - 8443:8443 # qBittorrent Encrypted UI (nginx) - ONLY ENCRYPTED ACCESS
       - 3443:3443 # Firefox Encrypted UI (nginx) - ONLY ENCRYPTED ACCESS
     volumes:
-      - ./certs/stunnel.pem:/etc/ssl/certs/stunnel.pem:ro
+      - ../certs/stunnel.pem:/etc/ssl/certs/stunnel.pem:ro
     restart: unless-stopped
     networks:
       - vpn-network
@@ -37,8 +37,8 @@ services:
       - TZ=Europe/London
       - WEBUI_PORT=8080
     volumes:
-      - ./config:/config
-      - ./downloads:/downloads
+      - ../config:/config
+      - ../downloads:/downloads
     restart: unless-stopped
 
   firefox:
@@ -58,7 +58,7 @@ services:
       - QT_SCALE_FACTOR=1.6
       - GDK_SCALE=1.6
     volumes:
-      - ./firefox-config:/config
+      - ../firefox-config:/config
     restart: unless-stopped
     cap_add:
       - NET_ADMIN

@@ -30,7 +30,7 @@ RUN mkdir -p /home/firefox/.mozilla && \
     chown -R firefox:firefox /home/firefox
 
 # Simple startup script that runs a basic HTTP server for now
-COPY firefox-simple-start.sh /usr/local/bin/firefox-simple-start.sh
+COPY scripts/firefox-simple-start.sh /usr/local/bin/firefox-simple-start.sh
 RUN chmod +x /usr/local/bin/firefox-simple-start.sh
 
 VOLUME ["/config"]

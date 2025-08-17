@@ -24,7 +24,7 @@ RUN mkdir -p /config /downloads && \
     chown -R qbittorrent:qbittorrent /config /downloads /opt/qbittorrent
 
 # Set up qBittorrent placeholder script
-COPY qbittorrent-simple-start.sh /usr/local/bin/qbittorrent-simple-start.sh
+COPY scripts/qbittorrent-simple-start.sh /usr/local/bin/qbittorrent-simple-start.sh
 RUN chmod +x /usr/local/bin/qbittorrent-simple-start.sh
 
 # Set environment variables

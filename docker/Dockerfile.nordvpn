@@ -21,9 +21,9 @@ RUN dnf install -y dnf-plugins-core && \
 RUN useradd -u 1001 -g nordvpn -s /bin/bash nordvpn
 
 # Copy startup script, nginx config, and stunnel P2P config
-COPY nordvpn-simple-start.sh /usr/local/bin/nordvpn-simple-start.sh
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY stunnel-p2p.conf /etc/stunnel/stunnel-p2p.conf
+COPY scripts/nordvpn-simple-start.sh /usr/local/bin/nordvpn-simple-start.sh
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/stunnel-p2p.conf /etc/stunnel/stunnel-p2p.conf
 RUN chmod +x /usr/local/bin/nordvpn-simple-start.sh
 
 # Set up directories

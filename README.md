@@ -1,6 +1,6 @@
 # Secure VPN Client & Browser Setup
 
-A secure containerized setup that routes Firefox and qBittorrent traffic through NordVPN without affecting your host network.
+A secure containerized setup that routes Firefox and qBT traffic through NordVPN without affecting your host network.
 
 ## 🏗️ Architecture
 

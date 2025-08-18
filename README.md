@@ -6,8 +6,8 @@ A secure containerized setup that routes Firefox and qBT traffic through NordVPN
 
 - **VPN Container**: Custom Red Hat RHEL 9 + official NordVPN client
 - **Firefox Container**: LinuxServer Firefox with web UI access
-- **qBittorrent Container**: LinuxServer qBittorrent with web UI access
-- **Network Isolation**: All Firefox/qBittorrent traffic routes through VPN container
+- **qBT Container**: LinuxServer qBT with web UI access
+- **Network Isolation**: All Firefox/qBT traffic routes through VPN container
 - **Host Protection**: Your host network remains completely unaffected
 
 ## ✨ Features
@@ -16,7 +16,7 @@ A secure containerized setup that routes Firefox and qBT traffic through NordVPN
 - 🛡️ **Network isolation** - Host network is never affected
 - 🔐 **Encrypted inter-container traffic** - TLS encryption protects against host-level sniffing
 - 🔍 **Trusted base images** - Red Hat RHEL 9 + official NordVPN client
-- 🌐 **Web interfaces** - Access Firefox and qBittorrent through your browser (HTTP + HTTPS)
+- 🌐 **Web interfaces** - Access Firefox and qBT through your browser (HTTP + HTTPS)
 - 📊 **Health monitoring** - Built-in scripts to check VPN status
 - 🚀 **Easy management** - Simple scripts to start/stop/restart everything
 
@@ -60,7 +60,7 @@ The script will automatically:
 
 **🔒 Encrypted Access Only (for security):**
 - **Firefox**: https://localhost:3443
-- **qBittorrent**: https://localhost:8443
+- **qBT**: https://localhost:8443
 
 > 🔒 **Security Note**: Only HTTPS endpoints are exposed to prevent host-level traffic sniffing. HTTP endpoints are disabled for security. Your browser will show a security warning for the self-signed certificate - this is normal and expected. Click "Advanced" → "Proceed to localhost" to continue.
 
@@ -98,7 +98,7 @@ curl -s ifconfig.me
 # Firefox IP (should match VPN IP)
 podman exec firefox curl -s ifconfig.me
 
-# qBittorrent IP (should match VPN IP)
+# qBT IP (should match VPN IP)
 podman exec qbittorrent curl -s ifconfig.me
 ```
 
@@ -116,7 +116,7 @@ podman exec qbittorrent curl -s ifconfig.me
 ├── stop-everything.sh           # Stop all services  
 ├── restart-everything.sh        # Restart all services
 ├── check-vpn-status.sh          # Health monitoring
-├── config/                      # qBittorrent configuration
+├── config/                      # qBT configuration
 ├── downloads/                   # Downloaded files (accessible from host)
 └── firefox-config/              # Firefox configuration
 ```
@@ -137,7 +137,7 @@ The VPN container automatically configures:
 - **User ID**: Matches your host user (501:20)
 - **Config**: Persistent in `./firefox-config/`
 
-### qBittorrent Settings
+### qBT Settings
 
 - **Web UI**: Port 8443
 - **Downloads**: Saved to `./downloads/` (accessible from host)
@@ -174,7 +174,7 @@ sleep 60 && ./check-vpn-status.sh
 ### Downloads not appearing
 - Files are saved to `./downloads/` directory
 - Check permissions: `ls -la downloads/`
-- Verify qBittorrent settings in web UI
+- Verify qBT settings in web UI
 
 ### Firefox display too small/large
 Edit `compose-vpn.yml` and change:
@@ -187,7 +187,7 @@ Then restart: `./restart-everything.sh`
 
 ## 🔐 Security Notes
 
-- ✅ **VPN traffic isolation**: Only Firefox/qBittorrent use VPN
+- ✅ **VPN traffic isolation**: Only Firefox/qBT use VPN
 - ✅ **Host network protection**: Your host IP never exposed
 - ✅ **Encrypted inter-container traffic**: TLS tunnels protect against host-level sniffing
 - ✅ **Trusted base images**: Red Hat RHEL 9 + official clients
@@ -224,7 +224,7 @@ This protects against:
 - **Download location**: Files go to `./downloads/` and are immediately accessible from host
 - **Persistence**: Configuration and downloads survive container restarts
 - **Firefox bookmarks**: Saved in `./firefox-config/` directory
-- **qBittorrent settings**: Saved in `./config/` directory
+- **qBT settings**: Saved in `./config/` directory
 
 ## 🆘 Support
 
@@ -238,4 +238,4 @@ If something isn't working:
 
 ---
 
-🎉 **You're all set!** Your Firefox and qBittorrent traffic is now securely routed through NordVPN while keeping your host network completely isolated and protected.
+🎉 **You're all set!** Your Firefox and qBT traffic is now securely routed through NordVPN while keeping your host network completely isolated and protected.

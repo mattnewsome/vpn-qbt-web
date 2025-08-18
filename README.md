@@ -139,7 +139,7 @@ The VPN container automatically configures:
 
 ### qBittorrent Settings
 
-- **Web UI**: Port 8080
+- **Web UI**: Port 8443
 - **Downloads**: Saved to `./downloads/` (accessible from host)
 - **User ID**: Matches your host user (501:20)
 - **Config**: Persistent in `./config/`

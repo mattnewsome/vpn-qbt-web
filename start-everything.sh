@@ -13,6 +13,10 @@ echo "🔄 Stopping any existing containers first..."
 ./stop-everything.sh 2>/dev/null || true
 echo
 
+# Check podman machine is initialized and started
+podman machine init > /dev/null 2>&1
+podman machine list | grep -i "Currently running" || podman machine start
+
 # Check Red Hat registry access by attempting fresh pull
 echo "🔍 Checking Red Hat registry access..."
 echo "🔐 Testing registry authentication (this ensures you have access)..."

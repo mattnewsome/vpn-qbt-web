@@ -12,6 +12,7 @@ RUN dnf update -y && \
     python3-pip \
     wget \
     supervisor \
+    iputils \
     && dnf clean all
 
 # Install noVNC for web access

@@ -13,6 +13,7 @@ RUN dnf update -y && \
     qbittorrent-nox \
     python3 \
     wget \
+    iputils \
     && dnf clean all
 
 # Create user with same UID/GID as host

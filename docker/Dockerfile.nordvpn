@@ -10,6 +10,7 @@ RUN dnf update -y && \
     nginx \
     stunnel \
     openssl \
+    iputils \
     && dnf clean all
 
 # Install NordVPN manually using their repository

@@ -14,7 +14,7 @@ echo "🔄 Stopping any existing containers first..."
 echo
 
 # Check podman machine is initialized and started
-podman machine init > /dev/null 2>&1
+podman machine init > /dev/null 2>&1 || true
 podman machine list | grep -i "Currently running" || podman machine start
 
 # Check Red Hat registry access by attempting fresh pull

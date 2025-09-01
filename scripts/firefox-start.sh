@@ -14,7 +14,7 @@ sleep 2
 
 # Start x11vnc
 echo "Starting VNC server..."
-x11vnc -display :1 -nopw -listen localhost -xkb -ncache 10 -ncache_cr -forever &
+x11vnc -display :1 -nopw -listen localhost -xkb -forever &
 sleep 2
 
 # Start noVNC websocket proxy
@@ -26,4 +26,4 @@ sleep 2
 # Start Firefox
 echo "Starting Firefox..."
 export HOME=/home/firefox
-exec firefox --display=:1 --no-sandbox https://whatismyipaddress.com/
+exec firefox --display=:1 --no-sandbox --enable-features=VaapiVideoDecoder --use-gl=egl --enable-gpu-rasterization https://whatismyipaddress.com/

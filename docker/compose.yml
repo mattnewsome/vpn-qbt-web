@@ -27,6 +27,13 @@ services:
       - 3000:3000 # Web UI for Firefox
     volumes:
       - ./firefox-config:/config
+    devices:
+      - /dev/dri:/dev/dri
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
     restart: unless-stopped
     cap_add:
       - NET_ADMIN

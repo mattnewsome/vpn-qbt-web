@@ -104,6 +104,17 @@ echo
 echo "⏳ Waiting for services to start..."
 sleep 15
 
+# Fix qBittorrent proxy settings (disable proxy that has no server configured)
+if [ -f "./config/qBittorrent/qBittorrent.conf" ]; then
+    echo "🔧 Fixing qBittorrent proxy settings..."
+    sed -i.bak 's/Proxy\\Profiles\\BitTorrent=true/Proxy\\Profiles\\BitTorrent=false/' ./config/qBittorrent/qBittorrent.conf
+    sed -i.bak 's/Proxy\\Profiles\\Misc=true/Proxy\\Profiles\\Misc=false/' ./config/qBittorrent/qBittorrent.conf
+    sed -i.bak 's/Proxy\\Profiles\\RSS=true/Proxy\\Profiles\\RSS=false/' ./config/qBittorrent/qBittorrent.conf
+    rm -f ./config/qBittorrent/qBittorrent.conf.bak 2>/dev/null
+    podman restart qbittorrent >/dev/null 2>&1 &
+    sleep 3
+fi
+
 # Check if encrypted services are accessible
 echo "🔍 Checking encrypted service health..."
 
